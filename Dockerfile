@@ -1,8 +1,8 @@
-# Stage 1: Install the build tools and deps
+# Stage 1: Install the deps and build
 ARG VERSION=edge
 ARG DOCKER_ARCH=arm32v7/
 ARG ALPINE_ARCH=arm32v7/
-FROM ${DOCKER_ARCH}alpine:$VERSION
+FROM ${DOCKER_ARCH}alpine:$VERSION as build_st
 
 ARG VERSION
 
@@ -32,8 +32,9 @@ RUN apk add --update-cache \
 	sysfsutils-dev \
 	expat-dev \
 	llvm15-dev \
-	git \
-  sudo
+	git
+	
+RUN apk add sudo
 	
 RUN adduser -D builder && \
 	addgroup builder abuild && \
@@ -60,3 +61,7 @@ RUN sudo apk add packages/abuilds/armv7/libetnaviv-dev*.apk
 RUN cd abuilds && \
 	cd mesa-etna && \
 	abuild -r
+
+#Stage 2, copy the output
+FROM scratch AS export-stage
+COPY --from=build_st /home/builder/packages/abuilds/armv7/*.apk .
