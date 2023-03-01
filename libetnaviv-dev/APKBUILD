@@ -5,7 +5,7 @@ pkgrel=0
 pkgdesc="Libetnaviv necessary to build mesa-etna"
 url="https://github.com/T110-pmOS/etna_viv"
 arch="all"
-license="-"
+license="MIT"
 depends="
 	linux-headers
 	libpng-dev
