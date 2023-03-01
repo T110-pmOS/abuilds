@@ -5,7 +5,13 @@ This git contains APKBUILD for packages working with goyawifi.
 You can use to install mesa working with libetnaviv driver configured for, and so on.
 
 ## Building
-    
+
+### Docker
+Use Dockerfile included:
+
+    docker build -t abuild --progress=plain --output output .
+
+or directly on tablet as bellow:
 ### Setup abuild
 
     addgroup <yourusername> abuild
