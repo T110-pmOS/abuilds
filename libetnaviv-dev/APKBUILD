@@ -1,0 +1,43 @@
+# Maintainer: cheadrian <che.adrian@yahoo.com>
+pkgname=libetnaviv-dev
+pkgver=1.0.0
+pkgrel=0
+pkgdesc="Libetnaviv necessary to build mesa-etna"
+url="https://github.com/T110-pmOS/etna_viv"
+arch="all"
+license="-"
+depends="
+	linux-headers
+	libpng-dev
+	mesa-dev
+	"
+makedepends=""
+checkdepends=""
+install=""
+subpackages=""
+commit=b9290136b094ad7361f8fcd31d79a3ecdbc6f828
+source="https://github.com/T110-pmOS/etna_viv/archive/$commit/master.zip"
+builddir="$srcdir/etna_viv-$commit"
+
+build() {
+	export GCABI="goya"
+	cd $builddir/attic
+	make etnaviv
+}
+
+check() {
+	# make check
+	:
+}
+
+package() {
+	# make DESTDIR="$pkgdir" install
+	mkdir -p $pkgdir/usr/lib/
+	mkdir -p $pkgdir/usr/include/etnaviv/
+	cp $builddir/attic/etnaviv/libetnaviv.a $pkgdir/usr/lib/
+	cp $builddir/attic/etnaviv/*.h $pkgdir/usr/include/etnaviv/
+}
+
+sha512sums="
+f1d6bd5da6dce5fe32b1d1759755a78221cf64a311f74304d30fd20295c21795301e5bcd73d55b7dba7d2ca285233ce477c5a108a86f0e691a9d39327ab360f9  master.zip
+"

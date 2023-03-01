@@ -1,0 +1,92 @@
+# Maintainer: "cheadrian"
+pkgname=mesa-etna
+pkgver=9.0
+pkgrel=0
+pkgdesc="Mesa with ETNA gallium"
+url="https://github.com/T110-pmOS/mesa"
+arch="all"
+license="MIT SGI-B-2.0 BSL-1.0"
+depends="
+	libetnaviv-dev
+	libdrm-dev
+	libxext-dev
+	eudev-dev
+	sysfsutils-dev
+	expat-dev
+	"
+makedepends="
+	bison
+	flex
+	glproto
+	libpthread-stubs
+	python3
+        py3-libxml2
+	py3-six
+        gettext
+"
+checkdepends=""
+install=""
+subpackages="$pkgname-dev $pkgname-doc"
+commit="5b595948f318bbab3d8af1944a8f6ddd7a3aef98"
+source="https://github.com/T110-pmOS/mesa/archive/$commit/py3_pre_rebase_2014_09.tar.gz"
+builddir="$srcdir/mesa-etna-$commit"
+_dri_driverdir=/usr/lib/xorg/modules/dri
+_gallium_drivers="swrast,etna"
+_egl_platforms="fbdev"
+
+build() {
+	ETNAVIV_BASE="/usr/include"
+	ETNAVIV_LIB="${ETNAVIV_BASE}/attic/etnaviv/" # important!
+	ETNAVIV_INC="${ETNAVIV_BASE}/attic/" # important!
+
+	export CFLAGS="-I${ETNAVIV_INC} -Wno-error=implicit-function-declaration"
+	export CXXFLAGS="-I${ETNAVIV_INC}"
+	export LDFLAGS="-L${ETNAVIV_LIB}"
+	export LIBDRM_LIBS="-ldrm"
+
+	export ETNA_LIBS="-letnaviv"
+	#export ETNA_LIBS="/home/q/etna_viv/attic/etnaviv/libetnaviv.a"
+	
+	export CFLAGS="$CFLAGS -O2 -g1"
+	export CXXFLAGS="$CXXFLAGS -O2 -g1"
+	export CPPFLAGS="$CPPFLAGS -O2 -g1"
+
+	case "$CARCH" in
+	armhf|armv7)
+		# gnu2 tlsdesc is broken in binutils
+		export CFLAGS="$CFLAGS -mtls-dialect=gnu"
+		export CXXFLAGS="$CXXFLAGS -mtls-dialect=gnu"
+		;;
+	esac
+        ./configure \
+                --build=$CBUILD \
+                --host=$CHOST \
+                --prefix=/usr \
+                --sysconfdir=/etc \
+                --mandir=/usr/share/man \
+                --localstatedir=/var
+		--enable-glx --enable-egl --enable-dri \
+    		--enable-gles2 --enable-gles1 \
+    		--with-gallium-drivers=$_gallium_drivers --with-egl-platforms=$_egl_platforms --enable-gallium-egl \
+    		--with-dri-drivers=$_dri_driverdir \
+    		--enable-debug \
+    		#--enable-glx-tls \
+    		#--enable-gallium-llvm
+        make
+}
+
+check() {
+	make check
+}
+
+package() {
+	make \
+		pkgconfig_dir=/usr/lib/pkgconfig \
+		prefix=/usr \
+		libdir_relative=lib \
+		DESTDIR="$pkgdir" \
+		install
+	rm -v "$pkgdir"/usr/lib/*.a
+	rm -v "$pkgdir"/usr/lib/*.la
+}
+
