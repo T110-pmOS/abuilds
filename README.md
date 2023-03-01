@@ -14,17 +14,18 @@ You can use to install mesa working with libetnaviv driver configured for, and s
     chmod g+w /var/cache/distfiles
     abuild-keygen -a -i
 
-Then cd into an package, e.g. **cd libetnaviv-dev** and:
+Then cd into an package, e.g. `cd libetnaviv-dev` and:
     
     abuild checksum
     abuild -r
 
-Packages output dir:  **~/packages/<yourusername>/<arch>/**
+Packages output dir:  `~/packages/<yourusername>/<arch>/`
 
 
 ### Docs on building
 
 https://wiki.alpinelinux.org/wiki/Creating_an_Alpine_package
+
 https://wiki.alpinelinux.org/wiki/Abuild_and_Helpers
 
 
