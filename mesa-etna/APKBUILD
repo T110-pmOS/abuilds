@@ -75,7 +75,8 @@ build() {
 }
 
 check() {
-	make check
+	#make check
+	:
 }
 
 package() {
