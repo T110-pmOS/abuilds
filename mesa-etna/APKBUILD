@@ -1,4 +1,4 @@
-# Maintainer: "cheadrian"
+# Maintainer: "cheadrian <che.adrian@yahoo.com>"
 pkgname=mesa-etna
 pkgver=9.0
 pkgrel=0
@@ -13,8 +13,12 @@ depends="
 	eudev-dev
 	sysfsutils-dev
 	expat-dev
+	llvm15-dev
 	"
 makedepends="
+	automake 
+	autoconf 
+	libtool
 	bison
 	flex
 	glproto
@@ -26,30 +30,26 @@ makedepends="
 "
 checkdepends=""
 install=""
-subpackages="$pkgname-dev $pkgname-doc"
+subpackages="$pkgname-dev"
 commit="5b595948f318bbab3d8af1944a8f6ddd7a3aef98"
 source="https://github.com/T110-pmOS/mesa/archive/$commit/py3_pre_rebase_2014_09.tar.gz"
-builddir="$srcdir/mesa-etna-$commit"
+builddir="$srcdir/mesa-$commit"
 _dri_driverdir=/usr/lib/xorg/modules/dri
 _gallium_drivers="swrast,etna"
 _egl_platforms="fbdev"
 
 build() {
 	ETNAVIV_BASE="/usr/include"
-	ETNAVIV_LIB="${ETNAVIV_BASE}/attic/etnaviv/" # important!
-	ETNAVIV_INC="${ETNAVIV_BASE}/attic/" # important!
-
-	export CFLAGS="-I${ETNAVIV_INC} -Wno-error=implicit-function-declaration"
-	export CXXFLAGS="-I${ETNAVIV_INC}"
-	export LDFLAGS="-L${ETNAVIV_LIB}"
+	ETNAVIV_LIB="/usr/lib/etnaviv/" # important!
+	ETNAVIV_INC="${ETNAVIV_BASE}" # important!
 	export LIBDRM_LIBS="-ldrm"
+	export ETNA_LIBS="/usr/lib/libetnaviv.a"
+	export LIBTOOL_FOR_BUILD="/usr/bin/libtool"
 
-	export ETNA_LIBS="-letnaviv"
-	#export ETNA_LIBS="/home/q/etna_viv/attic/etnaviv/libetnaviv.a"
-	
-	export CFLAGS="$CFLAGS -O2 -g1"
-	export CXXFLAGS="$CXXFLAGS -O2 -g1"
+	export CFLAGS="$CFLAGS -I${ETNAVIV_INC} -Wno-error=implicit-function-declaration -O2 -g1"
+	export CXXFLAGS="$CXXFLAGS -I${ETNAVIV_INC} -O2 -g1"
 	export CPPFLAGS="$CPPFLAGS -O2 -g1"
+        export LDFLAGS="-L${ETNAVIV_LIB}"
 
 	case "$CARCH" in
 	armhf|armv7)
@@ -58,21 +58,20 @@ build() {
 		export CXXFLAGS="$CXXFLAGS -mtls-dialect=gnu"
 		;;
 	esac
+	autoreconf -v --install
         ./configure \
                 --build=$CBUILD \
                 --host=$CHOST \
                 --prefix=/usr \
                 --sysconfdir=/etc \
                 --mandir=/usr/share/man \
-                --localstatedir=/var
+                --localstatedir=/var \
 		--enable-glx --enable-egl --enable-dri \
     		--enable-gles2 --enable-gles1 \
     		--with-gallium-drivers=$_gallium_drivers --with-egl-platforms=$_egl_platforms --enable-gallium-egl \
-    		--with-dri-drivers=$_dri_driverdir \
-    		--enable-debug \
-    		#--enable-glx-tls \
-    		#--enable-gallium-llvm
-        make
+    		--with-dri-drivers= 
+
+        make -j$(nproc)
 }
 
 check() {
@@ -90,3 +89,6 @@ package() {
 	rm -v "$pkgdir"/usr/lib/*.la
 }
 
+sha512sums="
+08f21ff8702f7f0690de4b80e2a0eb2efaee664b1f4e01a8b3f035210eea0dd336089580b1807fef056457f158a15069b4e8a880b8dcd41e286675dd1631a9d5  py3_pre_rebase_2014_09.tar.gz
+"
