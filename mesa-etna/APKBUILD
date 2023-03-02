@@ -34,6 +34,8 @@ subpackages="$pkgname-dev"
 commit="5b595948f318bbab3d8af1944a8f6ddd7a3aef98"
 source="https://github.com/T110-pmOS/mesa/archive/$commit/py3_pre_rebase_2014_09.tar.gz"
 builddir="$srcdir/mesa-$commit"
+#Disable testing
+options="!check"
 _dri_driverdir=/usr/lib/xorg/modules/dri
 _gallium_drivers="swrast,etna"
 _egl_platforms="fbdev"
