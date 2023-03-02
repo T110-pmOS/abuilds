@@ -88,7 +88,6 @@ package() {
 		libdir_relative=lib \
 		DESTDIR="$pkgdir" \
 		install
-	rm -v "$pkgdir"/usr/lib/*.a
 	rm -v "$pkgdir"/usr/lib/*.la
 }
 
