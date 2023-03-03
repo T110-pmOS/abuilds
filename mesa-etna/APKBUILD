@@ -1,6 +1,6 @@
 # Maintainer: "cheadrian <che.adrian@yahoo.com>"
 pkgname=mesa-etna
-pkgver=9.0
+pkgver=9.3.0
 pkgrel=0
 pkgdesc="Mesa with ETNA gallium"
 url="https://github.com/T110-pmOS/mesa"
@@ -32,7 +32,8 @@ checkdepends=""
 install=""
 subpackages="$pkgname-dev"
 commit="5b595948f318bbab3d8af1944a8f6ddd7a3aef98"
-source="https://github.com/T110-pmOS/mesa/archive/$commit/py3_pre_rebase_2014_09.tar.gz"
+source="https://github.com/T110-pmOS/mesa/archive/$commit/py3_pre_rebase_2014_09.tar.gz
+	version_fix.patch"
 builddir="$srcdir/mesa-$commit"
 #Disable testing
 options="!check"
@@ -93,4 +94,5 @@ package() {
 
 sha512sums="
 08f21ff8702f7f0690de4b80e2a0eb2efaee664b1f4e01a8b3f035210eea0dd336089580b1807fef056457f158a15069b4e8a880b8dcd41e286675dd1631a9d5  py3_pre_rebase_2014_09.tar.gz
+40e56e7c8d072456bee40ef7b0ca3496f14b268f1699972787977569df11aef360b9280d340507189d00b1dc91c1e97f0796a853640c65d79c579105e125cb01  version_fix.patch
 "
