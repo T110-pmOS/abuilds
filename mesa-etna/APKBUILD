@@ -18,10 +18,23 @@ depends="libetnaviv-dev"
 depends_dev="
         libdrm-dev
         libxext-dev
+	libxdamage-dev
+	libxcb-dev
+	libxshmfence-dev
         sysfsutils-dev
 	"
 makedepends="
 	$depends_dev
+	glslang-dev
+	libtool
+	libxfixes-dev
+	libva-dev
+	libvdpau-dev
+	libx11-dev
+	libxml2-dev
+	libxrandr-dev
+	zlib-dev
+	zstd-dev
 	eudev-dev
 	expat-dev
 	automake 
