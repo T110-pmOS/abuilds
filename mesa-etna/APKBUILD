@@ -1,20 +1,29 @@
 # Maintainer: "cheadrian <che.adrian@yahoo.com>"
-pkgname=mesa-etna
+pkgname=mesa
 pkgver=9.3.0
 pkgrel=0
 pkgdesc="Mesa with ETNA gallium"
 url="https://github.com/T110-pmOS/mesa"
 arch="all"
 license="MIT SGI-B-2.0 BSL-1.0"
-depends="
-	libetnaviv-dev
-	libdrm-dev
-	libxext-dev
-	eudev-dev
-	sysfsutils-dev
-	expat-dev
+subpackages="
+	$pkgname-dev
+	$pkgname-dri-gallium:_gallium
+	$pkgname-glapi
+	$pkgname-egl
+	$pkgname-gl
+	$pkgname-gles
+	"
+depends="libetnaviv-dev"
+depends_dev="
+        libdrm-dev
+        libxext-dev
+        sysfsutils-dev
 	"
 makedepends="
+	$depends_dev
+	eudev-dev
+	expat-dev
 	automake 
 	autoconf 
 	libtool
@@ -26,10 +35,9 @@ makedepends="
         py3-libxml2
 	py3-six
         gettext
-"
+	"
 checkdepends=""
 install=""
-subpackages="$pkgname-dev"
 commit="5b595948f318bbab3d8af1944a8f6ddd7a3aef98"
 source="https://github.com/T110-pmOS/mesa/archive/$commit/py3_pre_rebase_2014_09.tar.gz
 	version_fix.patch"
@@ -71,7 +79,7 @@ build() {
 		--enable-glx --enable-egl --enable-dri \
     		--enable-gles2 --enable-gles1 \
     		--with-gallium-drivers=$_gallium_drivers --with-egl-platforms=$_egl_platforms --enable-gallium-egl \
-    		--with-dri-drivers= 
+    		--with-dri-drivers= --with-dri-driverdir=$_dri_driverdir
 
         make -j$(nproc)
 }
@@ -91,6 +99,52 @@ package() {
 	rm -v "$pkgdir"/usr/lib/*.la
 }
 
+egl() {
+	pkgdesc="Mesa libEGL runtime libraries"
+	depends="mesa=$pkgver-r$pkgrel"
+
+	amove usr/lib/egl/*
+	amove usr/lib/libEGL.so*
+}
+
+gl() {
+	pkgdesc="Mesa libGL runtime libraries"
+	depends="mesa=$pkgver-r$pkgrel"
+
+	amove usr/lib/libGL.so*
+}
+
+glapi() {
+	pkgdesc="Mesa shared glapi"
+	replaces="$pkgname-gles=$pkgver-r$pkgrel"
+
+	amove usr/lib/libglapi.so.*
+}
+
+gles() {
+	pkgdesc="Mesa libGLESv2 runtime libraries"
+	depends="mesa=$pkgver-r$pkgrel"
+
+	amove usr/lib/libGLES*.so*
+}
+
+# Move links referencing the same file to the subpackage.
+# Usage: _mv_links <base directory> <example>
+# where <example> is one of the libraries covered by the megadriver.
+# The example is used to find other links that point to the same file.
+_mv_links() {
+	install -d "$subpkgdir"/$1
+	find -L "$pkgdir"/$1 -samefile "$pkgdir"/$1/$2 -print0 \
+		| xargs -0 -I{} mv {} "$subpkgdir"/$1/
+}
+
+_gallium() {
+	pkgdesc="Mesa gallium DRI drivers"
+	depends="mesa=$pkgver-r$pkgrel"
+
+	# libgallium_dri.so
+	_mv_links $_dri_driverdir swrast_dri.so
+}
 sha512sums="
 08f21ff8702f7f0690de4b80e2a0eb2efaee664b1f4e01a8b3f035210eea0dd336089580b1807fef056457f158a15069b4e8a880b8dcd41e286675dd1631a9d5  py3_pre_rebase_2014_09.tar.gz
 40e56e7c8d072456bee40ef7b0ca3496f14b268f1699972787977569df11aef360b9280d340507189d00b1dc91c1e97f0796a853640c65d79c579105e125cb01  version_fix.patch
