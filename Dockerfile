@@ -52,14 +52,12 @@ RUN abuild-keygen -a -i -n
 
 RUN git clone https://github.com/T110-pmOS/abuilds
 	
-RUN cd abuilds && \
-	cd libetnaviv-dev && \
+RUN cd abuilds/libetnaviv-dev && \
 	abuild -r
 
-RUN sudo apk add packages/abuilds/armv7/libetnaviv-dev*.apk
+RUN sudo apk add packages/abuilds/*/libetnaviv-dev*.apk
 
-RUN cd abuilds && \
-	cd mesa-etna && \
+RUN cd abuilds/mesa-etna && \
 	abuild -r
 
 #Stage 2, copy the output
