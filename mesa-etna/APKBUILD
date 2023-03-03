@@ -13,7 +13,6 @@ depends="
 	eudev-dev
 	sysfsutils-dev
 	expat-dev
-	llvm15-dev
 	"
 makedepends="
 	automake 
