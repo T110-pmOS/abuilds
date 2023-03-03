@@ -8,10 +8,8 @@ arch="all"
 license="MIT"
 depends="
 	linux-headers
-	libpng-dev
-	mesa-dev
 	"
-makedepends=""
+makedepends="libpng-dev"
 checkdepends=""
 install=""
 subpackages=""
