@@ -13,6 +13,7 @@ subpackages="
 	$pkgname-egl
 	$pkgname-gl
 	$pkgname-gles
+	$pkgname-gbm
 	"
 depends="libetnaviv-dev"
 depends_dev="
@@ -92,7 +93,8 @@ build() {
 		--enable-glx --enable-egl --enable-dri \
     		--enable-gles2 --enable-gles1 \
     		--with-gallium-drivers=$_gallium_drivers --with-egl-platforms=$_egl_platforms --enable-gallium-egl \
-    		--with-dri-drivers= --with-dri-driverdir=$_dri_driverdir
+    		--with-dri-drivers= --with-dri-driverdir=$_dri_driverdir \
+		--enable-gbm
 
         make -j$(nproc)
 }
@@ -139,6 +141,13 @@ gles() {
 	depends="mesa=$pkgver-r$pkgrel"
 
 	amove usr/lib/libGLES*.so*
+}
+
+gbm() {
+	pkgdesc="Mesa gbm library"
+	depends="mesa=$pkgver-r$pkgrel"
+
+	amove usr/lib/libgbm.so.*
 }
 
 # Move links referencing the same file to the subpackage.
