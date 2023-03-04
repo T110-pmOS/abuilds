@@ -14,6 +14,7 @@ subpackages="
 	$pkgname-gl
 	$pkgname-gles
 	$pkgname-gbm
+	$pkgname-osmesa
 	"
 depends="libetnaviv-dev"
 depends_dev="
@@ -94,7 +95,8 @@ build() {
     		--enable-gles2 --enable-gles1 \
     		--with-gallium-drivers=$_gallium_drivers --with-egl-platforms=$_egl_platforms --enable-gallium-egl \
     		--with-dri-drivers= --with-dri-driverdir=$_dri_driverdir \
-		--enable-gbm
+		--enable-gbm \
+		--enable-osmesa
 
         make -j$(nproc)
 }
@@ -148,6 +150,13 @@ gbm() {
 	depends="mesa=$pkgver-r$pkgrel"
 
 	amove usr/lib/libgbm.so.*
+}
+
+osmesa() {
+	pkgdesc="Mesa offscreen rendering libraries"
+	depends="mesa=$pkgver-r$pkgrel"
+
+	amove usr/lib/libOSMesa.so.*
 }
 
 # Move links referencing the same file to the subpackage.
