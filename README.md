@@ -2,7 +2,7 @@
 
 This git contains APKBUILD for packages working with goyawifi.
 
-You can use to install mesa working with libetnaviv driver configured for, and so on.
+You can use it to install mesa working with libetnaviv driver configured for, and so on.
 
 ## Building
 
@@ -11,7 +11,7 @@ Use Dockerfile included:
 
     docker build -t abuild --progress=plain --output output .
 
-or directly on tablet as bellow:
+or directly on the tablet as bellow:
 ### Setup abuild
 
     addgroup <yourusername> abuild
@@ -20,7 +20,7 @@ or directly on tablet as bellow:
     chmod g+w /var/cache/distfiles
     abuild-keygen -a -i
 
-Then cd into an package, e.g. `cd libetnaviv-dev` and:
+Then cd into a package, e.g. `cd libetnaviv-dev` and:
     
     abuild checksum
     abuild -r
@@ -33,5 +33,3 @@ Packages output dir:  `~/packages/<yourusername>/<arch>/`
 https://wiki.alpinelinux.org/wiki/Creating_an_Alpine_package
 
 https://wiki.alpinelinux.org/wiki/Abuild_and_Helpers
-
-
